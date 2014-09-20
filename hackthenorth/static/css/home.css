@@ -21,7 +21,10 @@ div#map-canvas {
 	width: 80%;
 	height: 100%;
 }
-div.rightbutton {
+#helpModal-header {
+  text-align: center;
+}
+div.vote-div {
   float: right;
   width: 22%;
 }

@@ -19,37 +19,38 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
     <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <!-- <link rel="stylesheet" href="{% static 'css/sb-admin-2.css' %}"> -->
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
-    <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/sina-app.js' %}"></script>
+    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header" id="helpModal-header">
+              <h2 class="modal-title" id="myModalLabel">LetsGo!</h2>
+            </div>
+            <div class="modal-body" id="helpModal-body">
+                <p>LetsGo! is a tool to help you and your friends discover businesses that you'd like to go to!</p>
+                <h4>How To:</h4>
+                <ol>
+                  <li>Send the URL to your friends so that they can access your LetsGo! List.</li>
+                  <li>More usage instructions!</li>
+                  <li>The list will be ordered based on the number of votes that it receives.</li>
+                </ol>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+      </div>
+    </div>
   </head>
   <body>
     <div id="page">
       <div id="map-canvas"></div>
-      <div id="sidebar">
-      <div class="panel panel-default">
-        <div class="panel-body" id="t1">
-        </div>
-      </div>
-      <div class="panel panel-default">
-        <div class="panel-body">
-          Basic panel example
-        </div>
-      </div>
-      <div class="panel panel-default">
-        <div class="panel-body">
-          Basic panel example
-        </div>
-      </div>
-      <div class="panel panel-default">
-        <div class="panel-body">
-          Basic panel example
-        </div>
-      </div>
+      <div id="sidebar"></div>
     </div>
-  </div>
   </body>
 </html>
