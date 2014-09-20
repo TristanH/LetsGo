@@ -1,0 +1,32 @@
+div#page {
+  border:1px solid purple;
+  width:100%;
+  height:100%;
+  margin:0 auto;
+  text-align:left;
+}
+
+div#sidebar {
+	float: right;
+	width: 20%;
+	height: 100%;
+    border:1px solid red;
+    overflow: scroll;
+    padding: 2px;
+    overflow-x: hidden;
+}
+div#map-canvas {
+	float: left;
+	border:1px solid blue;
+	width: 80%;
+	height: 100%;
+}
+div.vote {
+	float:right;
+}
+#sidebar .panel {
+  margin-bottom: 2px;
+}
+html, body{
+	height: 100%;
+}
