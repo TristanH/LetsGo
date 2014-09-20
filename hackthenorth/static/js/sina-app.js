@@ -1,12 +1,5 @@
-var map;
-
-function initialize() {
-  	var mapOptions = {
-		center: new google.maps.LatLng(0,0),
-		zoom: 2
- 	};
-  	map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-  	var businessList = [
+function updateUI() {
+  var businessList = [
   	{
 	  	"numvotes": 15,
 	  	"businessInfo": {
@@ -150,7 +143,7 @@ function initialize() {
 						"<div class='businesscontents' id='bc" + i + "'><b>" + businessList[i].businessInfo.businesses[0].name + "</b>" +
 						"</div>" +
 						"<div class='vote-div' id='vd" + i + "'>" +
-							"<button type='button' class='btn btn-default btn-lg' data-toggle='button' id='vb" + i + "'>" +
+							"<button type='button' class='btn btn-default btn-lg' id='vb" + i + "'>" +
 								"<span class='glyphicon glyphicon-thumbs-up'></span> " + businessList[i].numvotes + 
 							"</button>" +
 						"</div>" +
@@ -162,19 +155,20 @@ function initialize() {
 			debugger;
 			if (e.currentTarget.classList[e.currentTarget.classList.length - 1] == 'active') {
 				businessList[parseInt(e.currentTarget.id.slice(2))].numvotes--;
+				$(e.currentTarget).removeClass('active');
 				$('#' + e.currentTarget.id).html("<span class='glyphicon glyphicon-thumbs-up'></span> " + businessList[parseInt(e.currentTarget.id.slice(2))].numvotes)
 			} else {
 				businessList[parseInt(e.currentTarget.id.slice(2))].numvotes++;
+				$(e.currentTarget).addClass('active');
 				$('#' + e.currentTarget.id).html("<span class='glyphicon glyphicon-thumbs-up'></span> " + businessList[parseInt(e.currentTarget.id.slice(2))].numvotes)
 			}
 		});	
 	};
 	$( '#t1 .businesscontents').css('height', $( '#t1.panel-body' ).height() + 'px');
 	
-	
 	//$( '#t1 .businesscontents').css('background-image', 'url(' +  + ')');
 	$( '#helpModal' ).modal()
 
 }
-window.onload = initialize;
 
+$(document).ready(updateUI);

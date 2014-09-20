@@ -12,19 +12,25 @@
     </style>
 
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.1.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg3otSVw2zKrLA2GGslcQJwPOdyFqxof0&sensor=false&libraries=visualization">
-    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDg3otSVw2zKrLA2GGslcQJwPOdyFqxof0&sensor=false&libraries=visualization"></script>
 
     
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
-    <!-- Optional theme -->
-    <!-- <link rel="stylesheet" href="{% static 'css/sb-admin-2.css' %}"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <style type="text/css">
+        .marker {font-size: 11px;}
+        .marker .businessimage { float: left;}
+        .marker .ratingsimage {vertical-align:middle; margin-top:0px;}
+        .marker .businessinfo { margin-left: 110px;}
+    </style>
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <script type="text/javascript" src="{% static 'js/sina-app.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
+
     <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
       <div class="modal-dialog">
           <div class="modal-content">
