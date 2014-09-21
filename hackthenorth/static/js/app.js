@@ -180,24 +180,16 @@ function addBusinessMarkers(data){
       debugger;
       if(!clicked[this.index]) {
         //this.info.open(map, this.marker);
-        markers[this.index] = new google.maps.Marker({
-          position: markers[this.index].position,
-          map: map,
-          icon: greenCircle
-        });
+        this.marker.setOptions({icon: greenCircle});
       } else {
         //this.info.close(map, this.marker);
-        markers[this.index] = new google.maps.Marker({
-          position: markers[this.index].position,
-          map: map,
-          icon: redCircle
-        });
+        this.marker.setOptions({icon: redCircle});
       }
 
       clicked[this.index] = !clicked[this.index];
     }.bind(bundle));
 
-    }
+  }
 }
 
 function generateInfoWindowHtml(biz) {
