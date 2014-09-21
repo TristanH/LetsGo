@@ -58,14 +58,20 @@
   </head>
   <body>
     <div id="page">
+      <div id="sidebar"></div>
       <div id="header">
         <img id="logo" src="{% static 'img/LetsGo-white.png' %}">
         <div id="pagename">#NameOfYourThing</div>
-        <div id="pagedesc"><p>THIS IS MY PAGE!</p></div>
+        <!-- <div id="pagedesc"><p>THIS IS MY PAGE!</p></div> -->
+        <div class="btn-group" id='categoriesGroup'>
+          <button type="button" id='categoriesButton' class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            Categories <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right  " id='categoriesMenu' role="menu">
+          </ul>
+        </div>
       </div>
-      <div id="sidebar"></div>
       <div id="map-canvas"></div>
-
     </div>
   </body>
 </html>

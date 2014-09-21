@@ -1,5 +1,6 @@
 var map;
 var markers = [];
+var searchCategories =[];
 var infoLabels = [];
 var fetchingBusinesses = false;
 var numFetched = 0;
@@ -89,6 +90,10 @@ function initialize() {
   else{
     startGetBusinesses(new google.maps.LatLng(0,0));
   }
+  addSearchCat("hipster");
+  addSearchCat("bar");
+  addSearchCat("booze");
+  addSearchCat("sex");
   $('#gsbutton').click(function() {
     $('#helpModal').html(
       "<div class='modal-dialog modal-sm'>"+
@@ -131,6 +136,27 @@ function initialize() {
   $('#helpModal').modal('show')
 }
 
+function addSearchCat(catName) {
+  searchCategories.push(catName);
+  $('#categoriesMenu').append("<li id='cat" + (searchCategories.length - 1) +"'><a href='#''>#" + catName + "</a></li>");
+  var index = searchCategories.length - 1;
+  $('#cat' + (searchCategories.length - 1)).click(function() {
+    debugger;
+    if ($('#cat' + index).hasClass('active')) {
+      $('#cat' + index).removeClass('active')
+    } else {
+      for (var l = searchCategories.length - 1; l >= 0; l--) {
+        if (index != l) {
+          $('#cat' + l).removeClass('active')
+        }else {
+          $('#cat' + l).addClass('active')
+          setTerm(searchCategories[index]);
+        }
+      };
+      
+      }
+    });
+}
 function startGetBusinesses(location){
   map.setCenter(location);
   userLocation = location;
