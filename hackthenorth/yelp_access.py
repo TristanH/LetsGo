@@ -91,7 +91,12 @@ def get_business(business_id):
     Returns:
         dict: The JSON response from the request.
     """
-    business_path = BUSINESS_PATH + business_id
+    try:
+        business_id = str(business_id)
+    except:
+        return None
+
+    business_path = BUSINESS_PATH + str(business_id)
 
     return request(API_HOST, business_path)
 

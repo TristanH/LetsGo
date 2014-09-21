@@ -269,17 +269,17 @@ function setTerm(term){
   //make sure not already fetching....
   searchTerm = term;
   clearMarkers();
-  getBusinesses(userLocation, 0, searchTerm);
+  getBusinesses(mapCenter, 0, searchTerm);
 }
 
 function clearMarkers(){
   businessLimit = 100;
   numFetched = 0;
-  while(markers.length !=0){
-    markers[markers.length -1].setMap(null);
-    markers.pop();
+  for(var i=0;i<markers.length;i++){
+    if(markers[i].hasOwnProperty("numvotes"))
+      continue;
+    markers[i].setMap(null);
     infoLabels[infoLabels.length -1].setMap(null);
-    infoLabels.pop();
   }
 }
 

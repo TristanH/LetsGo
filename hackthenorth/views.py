@@ -82,7 +82,10 @@ def get_voted_businesses(request, slug):
     result = []
 
     for business in businesses:
-        result.append(yelp_access.get_business(business.yelp_id))
+        res_at = yelp_access.get_business(business.yelp_id)
+        if not res_at:
+            continue
+        result.append(res_at)
         result[-1]['numvotes'] = business.votes
 
     js_info = json.dumps(result)
