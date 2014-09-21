@@ -69,23 +69,32 @@ function initialize() {
             "</div>"+
             "<div class='modal-body' id='helpModal-body'>"+
               "<div class='input-group'>" + 
-                "<input type='text' class='form-control' placeholder='List Name'>" +
+                "<input type='text' class='form-control' placeholder='List Name' required>" +
                 "<span class='input-group-addon'>" +
                   "<span class='glyphicon glyphicon-tag'></span>" +
                 "</span>" +
               "</div>" +
               "<br>" + 
               "<div class='input-group'>" + 
-                "<input type='text' class='form-control' placeholder='Location'>" +
+                "<input type='text' class='form-control' placeholder='Location' required>" +
                 "<span class='input-group-btn'>" + 
                   "<button class='btn btn-default' type='button'>" +
                     "<span class='glyphicon glyphicon-map-marker'></span>" +
                   "</button>" +
                 "</span>" +
               "</div>" +
+              "<br>" + 
+              "<div class='input-group'>" + 
+                "<textarea rows='3' maxlength='100' class='form-control' placeholder='Description' required></textarea>" +
+                "<span class='input-group-addon'>" +
+                  "<span class='glyphicon glyphicon-tag'></span>" +
+                "</span>" +
+              "</div>" +
             "</div>"+
             "<div class='modal-footer'>"+
-                "<button type='button' id='donebutton' class='btn btn-default' data-dismiss='modal'>Done</button>"+
+              "<div class='form-group'>" +
+                "<button type='submit' id='donebutton' class='btn btn-default btn-primary' data-dismiss='modal'>Done</button>"+
+              "</div>" +
             "</div>"+
         "</div>"+
       "</div>")
