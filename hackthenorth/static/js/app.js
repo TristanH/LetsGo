@@ -167,21 +167,24 @@ function startingSetup(){
                 var locString = loc.toUrlValue(15);
                 var slug = $("#sluginput").val();
                 var description = $("#sessiondescription").val();
-                $.get('/gen_session/',
-                  {
+                $.ajax({url: '/gen_session/',
+                  data: {
                     'slug': slug,
                     'location': locString,
                     'description': description
                   },
-                  function(data, status){
+                  success: function(data, status){
                     if(status=="success"){
                       debugger;
                       window.location.href = "/" + data;
                     }
                     else
                       alert("Invalid input: " + data);
+                  },
+                  error: function(data, status){
+                      alert("Invalid input: " + data.responseText);
                   }
-                );
+                });
             } 
             else {
                 alert("Address not found: " + status); 
@@ -455,7 +458,7 @@ function voteEvent(id){
     $('#vb' + id ).removeClass('active');
     $('#vb' + id ).html("<span class='glyphicon glyphicon-thumbs-up'></span> " +"<div class='numvotes'>"+ this.numvotes + "</div>" );
     $.get('/'+sessionSlug+'/vote_for/',
-      {'downVote': true, 'yelp_id': this.id},
+      {'downvote': true, 'yelp_id': this.id},
       function(data, status){
         if(status != 'success')
           console.log("Failed to vote: " + status);
