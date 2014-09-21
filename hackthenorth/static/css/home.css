@@ -65,7 +65,12 @@ div#sidebar {
   border-top-left-radius: 0px;
   background: rgb(200, 200, 200);
 }
-#categoriesMenu {
+div#loading {
+  left: 0px;
+  bottom: 0px;
+  position: absolute;
+  font-weight: bold;
+  font-size: 40px;
 }
 div#map-canvas {
 	overflow: hidden;

@@ -158,6 +158,7 @@ function addSearchCat(catName) {
     });
 }
 function startGetBusinesses(location){
+  $('#loading').show();
   map.setCenter(location);
   userLocation = location;
  // getBusinesses(location, 0, searchTerm);
@@ -187,8 +188,10 @@ function getBusinesses(location, offset, term){
       numFetched += 20;
       if(offset < businessLimit && offset < data.total)
         getBusinesses(location, offset + 20, 'food');
-      else
+      else {
         fetchingBusinesses = false;
+        $('#loading').hide();
+      }
   });
 
 }
