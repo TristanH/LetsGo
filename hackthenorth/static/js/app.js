@@ -43,7 +43,6 @@ function initialize() {
                                               new google.maps.Point(11,11)),
           shadow: null,
       });
-    debugger;
 
       var locationInfo = new google.maps.InfoWindow({
           content: "Your Location"
@@ -61,7 +60,37 @@ function initialize() {
   else{
     startGetBusinesses(new google.maps.LatLng(0,0));
   }
-
+  $('#gsbutton').click(function() {
+    $('#helpModal').html(
+      "<div class='modal-dialog modal-sm'>"+
+          "<div class='modal-content'>"+
+            "<div class='modal-header' id='helpModal-header'>"+
+              "<h4 class='modal-title' id='myModalLabel'>Almost There!</h4>"+
+            "</div>"+
+            "<div class='modal-body' id='helpModal-body'>"+
+              "<div class='input-group'>" + 
+                "<input type='text' class='form-control' placeholder='List Name'>" +
+                "<span class='input-group-addon'>" +
+                  "<span class='glyphicon glyphicon-tag'></span>" +
+                "</span>" +
+              "</div>" +
+              "<br>" + 
+              "<div class='input-group'>" + 
+                "<input type='text' class='form-control' placeholder='Location'>" +
+                "<span class='input-group-btn'>" + 
+                  "<button class='btn btn-default' type='button'>" +
+                    "<span class='glyphicon glyphicon-map-marker'></span>" +
+                  "</button>" +
+                "</span>" +
+              "</div>" +
+            "</div>"+
+            "<div class='modal-footer'>"+
+                "<button type='button' id='donebutton' class='btn btn-default' data-dismiss='modal'>Done</button>"+
+            "</div>"+
+        "</div>"+
+      "</div>")
+  });
+  $('#helpModal').modal('show')
 }
 
 function startGetBusinesses(location){
@@ -87,6 +116,7 @@ function getBusinesses(location, offset, term){
       else
         fetchingBusinesses = false;
   });
+
 }
 
 function showMoreBusinesses(){
@@ -177,7 +207,6 @@ function addBusinessMarkers(data){
     }.bind(bundle));
     
     google.maps.event.addListener(marker, 'click', function() {
-      debugger;
       if(!clicked[this.index]) {
         //this.info.open(map, this.marker);
         this.marker.setOptions({icon: greenCircle});
@@ -244,7 +273,6 @@ function formatPhoneNumber(num) {
 }
 
 function addUI(business, id){
-  debugger;
   var votes = business.numvotes;
   var inserted = false;
   $("#sidebar .panel").each(function(){
@@ -256,8 +284,8 @@ function addUI(business, id){
             "<div class='main' id='main=" + id + "'>" + 
               "<div class='businesscontents' id='bc" + id + "'><b>" + business.name + "</b>" +
               "</div>" +
-              "<div class='vote-div' id='vd" + id + "'>" + //btn-primary
-                "<button type='button' class='btn btn-default btn-lg btn-primary' id='vb" + id + "'>" +
+              "<div class='vote-div' id='vd" + id + "'>" +
+                "<button type='button' class='btn btn-default btn-lg' id='vb" + id + "'>" +
                   "<span class='glyphicon glyphicon-thumbs-up'></span>" +"<div class='numvotes'>" + votes + "</div>" +
                 "</button>" +
               "</div>" +
@@ -276,7 +304,7 @@ function addUI(business, id){
             "<div class='businesscontents' id='bc" + id + "'><b>" + business.name + "</b>" +
             "</div>" +
             "<div class='vote-div' id='vd" + id + "'>" +
-              "<button type='button' class='btn btn-default btn-lg btn-primary' id='vb" + id + "'>" +
+              "<button type='button' class='btn btn-default btn-lg' id='vb" + id + "'>" +
                 "<span class='glyphicon glyphicon-thumbs-up'></span>" +"<div class='numvotes'>" + business.numvotes + "</div>" +
               "</button>" +
             "</div>" +
@@ -306,7 +334,7 @@ function addUI(business, id){
         $(e.currentTarget).addClass('active');
         $('#' + e.currentTarget.id).html("<span class='glyphicon glyphicon-thumbs-up'></span> " + "<div class='numvotes'>"+ (votes+1) + "</div>" );
       }
-  }); 
+  });
 }
 
 
