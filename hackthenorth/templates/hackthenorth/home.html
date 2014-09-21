@@ -31,7 +31,7 @@
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
     <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
 
-    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+    <div class="modal fade" id="helpModal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
       <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header" id="helpModal-header">
@@ -50,7 +50,7 @@
                 </ol>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="gsbutton" class="btn btn-default" data-dismiss="modal">Get Started</button>
             </div>
         </div>
       </div>
@@ -60,7 +60,7 @@
     <div id="page">
       <div id="header">
         <img id="logo" src="{% static 'img/LetsGo-white.png' %}">
-        <div id="pagename"><p>#NameOfYourThing</p></div>
+        <div id="pagename"><h4><b>#NameOfYourThing</b></h4></div>
         <div id="pagedesc"><p>THIS IS MY PAGE!</p></div>
       </div>
       <div id="sidebar"></div>

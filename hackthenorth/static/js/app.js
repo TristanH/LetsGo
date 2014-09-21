@@ -89,7 +89,46 @@ function initialize() {
   else{
     startGetBusinesses(new google.maps.LatLng(0,0));
   }
-
+  $('#gsbutton').click(function() {
+    $('#helpModal').html(
+      "<div class='modal-dialog modal-sm'>"+
+          "<div class='modal-content'>"+
+            "<div class='modal-header' id='helpModal-header'>"+
+              "<h4 class='modal-title' id='myModalLabel'>Almost There!</h4>"+
+            "</div>"+
+            "<div class='modal-body' id='helpModal-body'>"+
+              "<div class='input-group'>" + 
+                "<input type='text' class='form-control' placeholder='List Name' required>" +
+                "<span class='input-group-addon'>" +
+                  "<span class='glyphicon glyphicon-tag'></span>" +
+                "</span>" +
+              "</div>" +
+              "<br>" + 
+              "<div class='input-group'>" + 
+                "<input type='text' class='form-control' placeholder='Location' required>" +
+                "<span class='input-group-btn'>" + 
+                  "<button class='btn btn-default' type='button'>" +
+                    "<span class='glyphicon glyphicon-map-marker'></span>" +
+                  "</button>" +
+                "</span>" +
+              "</div>" +
+              "<br>" + 
+              "<div class='input-group'>" + 
+                "<textarea rows='3' maxlength='100' class='form-control' placeholder='Description' required></textarea>" +
+                "<span class='input-group-addon'>" +
+                  "<span class='glyphicon glyphicon-tag'></span>" +
+                "</span>" +
+              "</div>" +
+            "</div>"+
+            "<div class='modal-footer'>"+
+              "<div class='form-group'>" +
+                "<button type='submit' id='donebutton' class='btn btn-default btn-primary' data-dismiss='modal'>Done</button>"+
+              "</div>" +
+            "</div>"+
+        "</div>"+
+      "</div>")
+  });
+  $('#helpModal').modal('show')
 }
 
 function startGetBusinesses(location){
@@ -125,6 +164,7 @@ function getBusinesses(location, offset, term){
       else
         fetchingBusinesses = false;
   });
+
 }
 
 function showMoreBusinesses(){
@@ -271,7 +311,7 @@ function addUI(business, id){
             "<div class='businesscontents' id='bc" + id + "'><b>" + business.name + "</b>" +
             "</div>" +
             "<div class='vote-div' id='vd" + id + "'>" + //btn-primary
-              "<button type='button' class='btn btn-default btn-lg btn-primary' id='vb" + id + "'>" +
+              "<button type='button' class='btn btn-default btn-lg' id='vb" + id + "'>" +
                 "<span class='glyphicon glyphicon-thumbs-up'></span>" +"<div class='numvotes'>" + votes + "</div>" +
               "</button>" +
             "</div>" +
