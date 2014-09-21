@@ -12,15 +12,27 @@ class HomeView(TemplateView):
 
 class SessionView(TemplateView):
     template_name = 'hackthenorth/home.html'
-    def get(self, request, slug):
-        return HttpResponse('result')
+
+    def get(self, request, slug, *args, **kwargs):
+        self.slug = slug
+        return super(SessionView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(SessionView, self).get_context_data(**kwargs)
+        return context
 
 def vote_for(request, slug):
     map_session = MapSession.objects.get(slug=slug)
-    business = BusinessEntity.objects.get(
+    business = BusinessEntity.objects.filter(
         session=map_session,
         yelp_id=request.GET['yelp_id'],
     )
+
+    if(len(business) == 0):
+        business = BusinessEntity(votes=0, yelp_id=request.GET['yelp_id'], session=map_session)
+    else:
+        business = business[0]
+
     if('downvote' in request.GET):
         business.votes-=1
     else:
@@ -38,6 +50,7 @@ def get_voted_businesses(request, slug):
 
     for business in businesses:
         result.append(yelp_access.get_business(business.yelp_id))
+        result[-1]['numvotes'] = business.votes
 
     js_info = json.dumps(result)
 
@@ -49,10 +62,6 @@ def get_business_info(request):
         request.GET['ll'],
         request.GET['offset']
     )
-
-    for business in result['businesses']:
-        if randint(1,5) == 5:
-            business['numvotes'] = randint(1,10)
 
     js_info = json.dumps(result)
 

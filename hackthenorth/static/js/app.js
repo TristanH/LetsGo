@@ -6,6 +6,23 @@ var numFetched = 0;
 var businessLimit = 100;
 var userLocation = new google.maps.LatLng(0,0);
 var searchTerm = 'food';
+var sessionSlug = '';
+var redCircle = {
+  path: google.maps.SymbolPath.CIRCLE,
+  scale: 7,
+  fillColor: 'red',
+  fillOpacity: .8,
+  strokeColor: 'rgb(60, 60, 60)',
+  strokeWeight: 3
+};
+var greenCircle = {
+  path: google.maps.SymbolPath.CIRCLE,
+  scale: 7,
+  fillColor: 'green',
+  fillOpacity: .8,
+  strokeColor: 'rgb(60, 60, 60)',
+  strokeWeight: 3
+};
 
 
 function initialize() {
@@ -27,7 +44,19 @@ function initialize() {
   ];
   map.setOptions({styles: noPoi});
 
-  if(false){
+  sessionSlug = window.location.pathname.substring(1);
+  if(sessionSlug[sessionSlug.length-1]=="/")
+    sessionSlug=sessionSlug.substring(0,sessionSlug.length-1);
+
+  //popup homepage modal here
+  if(sessionSlug=="/" || sessionSlug=="")
+    return;
+
+  $("#pagename").text("#"+sessionSlug);
+
+
+
+  if(true){
     //check here for this sessions default location
     startGetBusinesses(new google.maps.LatLng(43.65, -79.4)); //use django-supplied location
   }
@@ -43,7 +72,6 @@ function initialize() {
                                               new google.maps.Point(11,11)),
           shadow: null,
       });
-    debugger;
 
       var locationInfo = new google.maps.InfoWindow({
           content: "Your Location"
@@ -67,7 +95,17 @@ function initialize() {
 function startGetBusinesses(location){
   map.setCenter(location);
   userLocation = location;
-  getBusinesses(location, 0, searchTerm);
+ // getBusinesses(location, 0, searchTerm);
+  getVotedBusinesses(location);
+}
+
+function getVotedBusinesses(location){
+  $.get('/'+sessionSlug+'/get_voted/',
+    function(data, status){
+      addBusinessMarkers(data);
+      getBusinesses(location, 0, searchTerm);
+      //call the standard business search once the important ones are found
+    });
 }
 
 function getBusinesses(location, offset, term){
@@ -80,7 +118,7 @@ function getBusinesses(location, offset, term){
       'offset': offset
     },
     function(data, status){
-      addBusinessMarkers(data);
+      addBusinessMarkers(data.businesses);
       numFetched += 20;
       if(offset < businessLimit && offset < data.total)
         getBusinesses(location, offset + 20, 'food');
@@ -114,56 +152,35 @@ function clearMarkers(){
   }
 }
 
-function addBusinessMarkers(data){
+function addBusinessMarkers(businesses){
   var clicked = [];
 
-  for(var i=0; i<data.businesses.length; i++){
+  for(var i=0; i<businesses.length; i++){
     var location;
-    if('coordinate' in data.businesses[i].location)
-      location = new google.maps.LatLng(data.businesses[i].location.coordinate.latitude, data.businesses[i].location.coordinate.longitude);
+    if('coordinate' in businesses[i].location)
+      location = new google.maps.LatLng(businesses[i].location.coordinate.latitude, businesses[i].location.coordinate.longitude);
     else
       continue;
 
-    if(data.businesses[i].numvotes)
-      addUI(data.businesses[i], markers.length);
-    // var goldStar = {
-    //   path: 'M 125,5 155,90 245,90 175,145 200,230 125,180 50,230 75,145 5,90 95,90 z',
-    //   fillColor: 'yellow',
-    //   fillOpacity: 0.8,
-    //   scale: 1,
-    //   strokeColor: 'gold',
-    //   strokeWeight: 14
-    // };
-    var redCircle = {
-      path: google.maps.SymbolPath.CIRCLE,
-      scale: 7,
-      fillColor: 'red',
-      fillOpacity: .8,
-      strokeColor: 'rgb(60, 60, 60)',
-      strokeWeight: 3
-    };
-    var greenCircle = {
-      path: google.maps.SymbolPath.CIRCLE,
-      scale: 7,
-      fillColor: 'green',
-      fillOpacity: .8,
-      strokeColor: 'rgb(60, 60, 60)',
-      strokeWeight: 3
-    };
     var marker = new google.maps.Marker({
         position: location,
         map: map,
         icon: redCircle
     });
-    
     markers.push(marker);
+
+    if(businesses[i].numvotes){
+      marker.numvotes = businesses[i].numvotes;  
+      addUI(businesses[i], markers.length - 1);
+    }
+
     var info = new google.maps.InfoWindow({
-        content: generateInfoWindowHtml(data.businesses[i])
+        content: generateInfoWindowHtml(businesses[i])
     });
     infoLabels.push(info);
     clicked.push(false);
 
-    bundle = {'marker': marker, 'info': info, 'index': markers.length - 1};
+    bundle = {'marker': marker, 'info': info, 'index': markers.length - 1, 'i': i};
 
     google.maps.event.addListener(marker, 'mouseover', function() {
       $("#bp" + this.index).css('background-color', 'rgb(236,236,236)');
@@ -177,13 +194,14 @@ function addBusinessMarkers(data){
     }.bind(bundle));
     
     google.maps.event.addListener(marker, 'click', function() {
-      debugger;
       if(!clicked[this.index]) {
         //this.info.open(map, this.marker);
-        this.marker.setOptions({icon: greenCircle});
+        debugger;
+        voteEvent.call(businesses[this.i], this.index)
+
       } else {
         //this.info.close(map, this.marker);
-        this.marker.setOptions({icon: redCircle});
+        voteEvent.call(businesses[this.i], this.index)
       }
 
       clicked[this.index] = !clicked[this.index];
@@ -244,48 +262,38 @@ function formatPhoneNumber(num) {
 }
 
 function addUI(business, id){
-  debugger;
   var votes = business.numvotes;
   var inserted = false;
-  $("#sidebar .panel").each(function(){
-    var votesAt =  parseInt($("#" + this.id + " " + ".numvotes").text());
-    if(business.numvotes > votesAt && !inserted){
-       $( this ).before(
-        "<div class='panel panel-default' id='bp" + id + "'>" +
-          "<div class='panel-body' id='body " + id + "'>" +
-            "<div class='main' id='main=" + id + "'>" + 
-              "<div class='businesscontents' id='bc" + id + "'><b>" + business.name + "</b>" +
-              "</div>" +
-              "<div class='vote-div' id='vd" + id + "'>" + //btn-primary
-                "<button type='button' class='btn btn-default btn-lg btn-primary' id='vb" + id + "'>" +
-                  "<span class='glyphicon glyphicon-thumbs-up'></span>" +"<div class='numvotes'>" + votes + "</div>" +
-                "</button>" +
-              "</div>" +
-            "</div>" +
-          "</div>" +
-        "</div>"
-       );  
-      inserted = true;
-    }
-  });
-  if(!inserted)
-    $("#sidebar").append(
-      "<div class='panel panel-default' id='bp" + id + "'>" +
+  var newPanel = 
+    $("<div class='panel panel-default' id='bp" + id + "'>" +
         "<div class='panel-body' id='body " + id + "'>" +
           "<div class='main' id='main=" + id + "'>" + 
             "<div class='businesscontents' id='bc" + id + "'><b>" + business.name + "</b>" +
             "</div>" +
-            "<div class='vote-div' id='vd" + id + "'>" +
+            "<div class='vote-div' id='vd" + id + "'>" + //btn-primary
               "<button type='button' class='btn btn-default btn-lg btn-primary' id='vb" + id + "'>" +
-                "<span class='glyphicon glyphicon-thumbs-up'></span>" +"<div class='numvotes'>" + business.numvotes + "</div>" +
+                "<span class='glyphicon glyphicon-thumbs-up'></span>" +"<div class='numvotes'>" + votes + "</div>" +
               "</button>" +
             "</div>" +
           "</div>" +
         "</div>" +
-      "</div>"
-  ); 
+      "</div>").hide();
+
+  $("#sidebar .panel").each(function(){
+    var votesAt =  parseInt($("#" + this.id + " " + ".numvotes").text());
+
+    if(business.numvotes > votesAt && !inserted){
+       $( this ).before(newPanel);  
+      inserted = true;
+    }
+  });
+
+  if(!inserted)
+    $("#sidebar").append(newPanel);
   
   $("#bp" + id + " .businesscontents").html(generateInfoWindowHtml(business))
+
+  newPanel.slideDown('slow');
   
   $("#bp" + id).hover(
     function(){
@@ -297,16 +305,39 @@ function addUI(business, id){
       infoLabels[id].close(map, markers[id]);
     }
   );
+  $( '#vb' + id ).click(voteEvent.bind(business, id)); 
+}
 
-  $( '#vb' + id ).click(function(e) {
-      if (e.currentTarget.classList[e.currentTarget.classList.length - 1] == 'active') {
-        $(e.currentTarget).removeClass('active');
-        $('#' + e.currentTarget.id).html("<span class='glyphicon glyphicon-thumbs-up'></span> " +"<div class='numvotes'>"+ votes + "</div>" );
-      } else {
-        $(e.currentTarget).addClass('active');
-        $('#' + e.currentTarget.id).html("<span class='glyphicon glyphicon-thumbs-up'></span> " + "<div class='numvotes'>"+ (votes+1) + "</div>" );
+function voteEvent(id){
+  debugger;
+  //handle case of newly voted business
+  if(!this.hasOwnProperty('numvotes')){
+    this.numvotes=0;
+    addUI(this, id);
+  }
+  if ( $( '#vb' + id ).hasClass('active')) {
+    markers[id].setOptions({icon: redCircle});
+    $('#vb' + id ).removeClass('active');
+    $('#vb' + id ).html("<span class='glyphicon glyphicon-thumbs-up'></span> " +"<div class='numvotes'>"+ this.numvotes + "</div>" );
+    $.get('/'+sessionSlug+'/vote_for/',
+      {'downVote': true, 'yelp_id': this.id},
+      function(data, status){
+        if(status != 'success')
+          console.log("Failed to vote: " + status);
       }
-  }); 
+    );
+  } else {
+    $.get('/'+sessionSlug+'/vote_for/',
+      {'yelp_id': this.id},
+      function(data, status){
+        if(status != 'success')
+          console.log("Failed to vote: " + status);
+      }
+    );
+    markers[id].setOptions({icon: greenCircle});
+    $('#vb' + id ).addClass('active');
+    $('#vb' + id ).html("<span class='glyphicon glyphicon-thumbs-up'></span> " + "<div class='numvotes'>"+ (this.numvotes+1) + "</div>" );
+  }
 }
 
 
