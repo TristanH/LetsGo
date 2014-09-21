@@ -27,7 +27,7 @@ function initialize() {
   ];
   map.setOptions({styles: noPoi});
 
-  if(true){
+  if(false){
     //check here for this sessions default location
     startGetBusinesses(new google.maps.LatLng(43.65, -79.4)); //use django-supplied location
   }
@@ -125,11 +125,36 @@ function addBusinessMarkers(data){
 
     if(data.businesses[i].numvotes)
       addUI(data.businesses[i], markers.length);
-
+    // var goldStar = {
+    //   path: 'M 125,5 155,90 245,90 175,145 200,230 125,180 50,230 75,145 5,90 95,90 z',
+    //   fillColor: 'yellow',
+    //   fillOpacity: 0.8,
+    //   scale: 1,
+    //   strokeColor: 'gold',
+    //   strokeWeight: 14
+    // };
+    var redCircle = {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 7,
+      fillColor: 'red',
+      fillOpacity: .8,
+      strokeColor: 'rgb(60, 60, 60)',
+      strokeWeight: 3
+    };
+    var greenCircle = {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale: 7,
+      fillColor: 'green',
+      fillOpacity: .8,
+      strokeColor: 'rgb(60, 60, 60)',
+      strokeWeight: 3
+    };
     var marker = new google.maps.Marker({
         position: location,
-        map: map
+        map: map,
+        icon: redCircle
     });
+    
     markers.push(marker);
     var info = new google.maps.InfoWindow({
         content: generateInfoWindowHtml(data.businesses[i])
@@ -141,20 +166,32 @@ function addBusinessMarkers(data){
 
     google.maps.event.addListener(marker, 'mouseover', function() {
       $("#bp" + this.index).css('background-color', 'rgb(236,236,236)');
-      if(!clicked[this.index]) 
+ //     if(!clicked[this.index]) 
         this.info.open(map, this.marker);
     }.bind(bundle));
     google.maps.event.addListener(marker, 'mouseout', function() {
       $("#bp" + this.index).css('background-color', 'white');
-      if(!clicked[this.index])
+  //    if(!clicked[this.index])
         this.info.close(map, this.marker);
     }.bind(bundle));
     
     google.maps.event.addListener(marker, 'click', function() {
-      if(!clicked[this.index])
-        this.info.open(map, this.marker);
-      else
-        this.info.close(map, this.marker);
+      debugger;
+      if(!clicked[this.index]) {
+        //this.info.open(map, this.marker);
+        markers[this.index] = new google.maps.Marker({
+          position: markers[this.index].position,
+          map: map,
+          icon: greenCircle
+        });
+      } else {
+        //this.info.close(map, this.marker);
+        markers[this.index] = new google.maps.Marker({
+          position: markers[this.index].position,
+          map: map,
+          icon: redCircle
+        });
+      }
 
       clicked[this.index] = !clicked[this.index];
     }.bind(bundle));
@@ -226,8 +263,8 @@ function addUI(business, id){
             "<div class='main' id='main=" + id + "'>" + 
               "<div class='businesscontents' id='bc" + id + "'><b>" + business.name + "</b>" +
               "</div>" +
-              "<div class='vote-div' id='vd" + id + "'>" +
-                "<button type='button' class='btn btn-default btn-lg' id='vb" + id + "'>" +
+              "<div class='vote-div' id='vd" + id + "'>" + //btn-primary
+                "<button type='button' class='btn btn-default btn-lg btn-primary' id='vb" + id + "'>" +
                   "<span class='glyphicon glyphicon-thumbs-up'></span>" +"<div class='numvotes'>" + votes + "</div>" +
                 "</button>" +
               "</div>" +
@@ -246,7 +283,7 @@ function addUI(business, id){
             "<div class='businesscontents' id='bc" + id + "'><b>" + business.name + "</b>" +
             "</div>" +
             "<div class='vote-div' id='vd" + id + "'>" +
-              "<button type='button' class='btn btn-default btn-lg' id='vb" + id + "'>" +
+              "<button type='button' class='btn btn-default btn-lg btn-primary' id='vb" + id + "'>" +
                 "<span class='glyphicon glyphicon-thumbs-up'></span>" +"<div class='numvotes'>" + business.numvotes + "</div>" +
               "</button>" +
             "</div>" +

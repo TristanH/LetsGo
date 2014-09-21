@@ -5,7 +5,6 @@ import sys
 import urllib
 import urllib2
 import oauth2
-import geopy
 
 API_HOST = 'api.yelp.com'
 DEFAULT_TERM = 'dinner'

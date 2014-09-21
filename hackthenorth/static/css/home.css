@@ -1,16 +1,43 @@
 div#page {
-  border:1px solid purple;
   width:100%;
-  height:100%;
+  height:93%;
   margin:0 auto;
   text-align:left;
 }
+div#header {
+  float: top;
+  width: 100%;
+  height: 30px;
+  background-color: rgb(127, 127, 127);
+  /*border-bottom-style: solid;
+  border-bottom-color: rgb(60, 60, 60);
+  border-bottom-width: 2px;*/
+}
+#logo {
+  float: left;
+  opacity: 0.75;
+  height: 100%;
+  width: auto;
+  padding: 2px;
+}
+div#pagename {
+  display:inline-block;
+  padding-top: 10px;
+  padding-left: 5px;
+  height: 100%;
+}
 
+div#pagedesc {
+  float:right;
+  display:inline-block;
+  padding-top: 10px;
+  padding-left: 5px;
+  height: 100%;
+}
 div#sidebar {
 	float: right;
 	width: 400px;
 	height: 100%;
-  border:1px solid red;
   overflow: scroll;
   padding: 2px;
   overflow-x: hidden;
@@ -18,7 +45,6 @@ div#sidebar {
 div#map-canvas {
 	overflow: hidden;
   min-height: 50px;
-	border:1px solid blue;
 	height: 100%;
 }
 #helpModal-header {
@@ -27,6 +53,8 @@ div#map-canvas {
 div.vote-div {
   float: right;
   width: 22%;
+  min-height: 100%;
+  position:relative;
 }
 div.businesscontents {
   float: left;
@@ -39,15 +67,16 @@ div.businesscontents {
 
 }
 #sidebar .panel-body {
-    padding: 0px;
-    vertical-align: middle;
+  padding: 0px;
+  position:relative;
 }
 #sidebar .btn {
   float: right;
   width: 100%;
-  height:;
-  background: rgba(200, 200, 200, 1);
-  border: 1px solid gray;
+  min-height: 100%;
+  /*background: rgba(200, 200, 200, 1);*/
+  border: 2px solid;
+  border-color: rgb(60, 60, 60);
   font-size: 12px;
   text-align: center;
   padding-left: 0px;
