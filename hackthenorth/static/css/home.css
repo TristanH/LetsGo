@@ -146,7 +146,7 @@ html, body{
 .marker .businessinfo { margin-left: 110px;}
 .marker .businessname { font-style: bold; font-size: 12px;}
 
-#sessionloc{
+#sessionLoc{
   display: none;
 }
 
