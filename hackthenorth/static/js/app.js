@@ -12,7 +12,7 @@ function initialize() {
 
   var mapOptions = {
     center: new google.maps.LatLng(37.900000,-122.500000),
-    zoom: 13
+    zoom: 14
   };
   map = new google.maps.Map(document.getElementById("map-canvas"),
       mapOptions);
@@ -29,7 +29,7 @@ function initialize() {
 
   if(true){
     //check here for this sessions default location
-    startGetBusinesses(new google.maps.LatLng(43.7, -79.4)); //use django-supplied location
+    startGetBusinesses(new google.maps.LatLng(43.65, -79.4)); //use django-supplied location
   }
   else if(!!navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -122,6 +122,10 @@ function addBusinessMarkers(data){
       location = new google.maps.LatLng(data.businesses[i].location.coordinate.latitude, data.businesses[i].location.coordinate.longitude);
     else
       continue;
+
+    if(data.businesses[i].numvotes)
+      addUI(data.businesses[i], markers.length);
+
     var marker = new google.maps.Marker({
         position: location,
         map: map
@@ -136,10 +140,12 @@ function addBusinessMarkers(data){
     bundle = {'marker': marker, 'info': info, 'index': markers.length - 1};
 
     google.maps.event.addListener(marker, 'mouseover', function() {
+      $("#bp" + this.index).css('background-color', 'rgb(236,236,236)');
       if(!clicked[this.index]) 
         this.info.open(map, this.marker);
     }.bind(bundle));
     google.maps.event.addListener(marker, 'mouseout', function() {
+      $("#bp" + this.index).css('background-color', 'white');
       if(!clicked[this.index])
         this.info.close(map, this.marker);
     }.bind(bundle));
@@ -166,16 +172,14 @@ function generateInfoWindowHtml(biz) {
     // div start
     text += '<div class="businessinfo">';
     // name/url
-    text += '<a href="'+biz.url+'" target="_blank">'+biz.name+'</a><br/>';
+    text += '<a class="businessname" href="'+biz.url+'" target="_blank">'+biz.name+'</a><br/>';
     // stars
     text += '<img class="ratingsimage" src="'+biz.rating_img_url_small+'"/>&nbsp;based&nbsp;on&nbsp;';
     // reviews
-    text += biz.review_count + '&nbsp;reviews<br/><br />';
+    text += '<a href="' + biz.url + ' target="_blank">' + biz.review_count + '&nbsp;reviews</a><br/>';
     // categories
     text += formatCategories(biz.categories);
-    // neighborhoods
-    if(biz.neighborhoods)
-        text += formatNeighborhoods(biz.neighborhoods);
+
     // address
     text += biz.location.address[0] + '<br/>';
     // address2
@@ -186,8 +190,6 @@ function generateInfoWindowHtml(biz) {
     // phone number
     if(biz.phone)
         text += formatPhoneNumber(biz.phone);
-    // Read the reviews
-    text += '<br/><a href="'+biz.url+'" target="_blank">Read Yelp reviews »</a><br/>';
     // div end
     text += '</div></div>'
     return text;
@@ -197,12 +199,12 @@ function formatCategories(cats) {
     if(typeof cats == 'undefined')
       return '';
 
-    var s = 'Categories: ';
+    var s = '<div class="categories">';
     for(var i=0; i<cats.length; i++) {
         s+= cats[i][0];
         if(i != cats.length-1) s += ', ';
     }
-    s += '<br/>';
+    s += '<br/></div>';
     return s;
 }
 
@@ -210,5 +212,72 @@ function formatPhoneNumber(num) {
     if(num.length != 10) return '';
     return '(' + num.slice(0,3) + ') ' + num.slice(3,6) + '-' + num.slice(6,10) + '<br/>';
 }
+
+function addUI(business, id){
+
+  var votes = business.numvotes;
+  var inserted = false;
+  $("#sidebar .panel").each(function(){
+    var votesAt =  parseInt($("#" + this.id + " " + ".numvotes").text());
+    if(business.numvotes > votesAt && !inserted){
+       $( this ).before(
+        "<div class='panel panel-default' id='bp" + id + "'>" +
+          "<div class='panel-body' id='body " + id + "'>" +
+            "<div class='main' id='main=" + id + "'>" + 
+              "<div class='businesscontents' id='bc" + id + "'><b>" + business.name + "</b>" +
+              "</div>" +
+              "<div class='vote-div' id='vd" + id + "'>" +
+                "<button type='button' class='btn btn-default btn-lg' id='vb" + id + "'>" +
+                  "<span class='glyphicon glyphicon-thumbs-up'></span>" +"<div class='numvotes'>" + votes + "</div>" +
+                "</button>" +
+              "</div>" +
+            "</div>" +
+          "</div>" +
+        "</div>"
+       );  
+      inserted = true;
+    }
+  });
+  if(!inserted)
+    $("#sidebar").append(
+      "<div class='panel panel-default' id='bp" + id + "'>" +
+        "<div class='panel-body' id='body " + id + "'>" +
+          "<div class='main' id='main=" + id + "'>" + 
+            "<div class='businesscontents' id='bc" + id + "'><b>" + business.name + "</b>" +
+            "</div>" +
+            "<div class='vote-div' id='vd" + id + "'>" +
+              "<button type='button' class='btn btn-default btn-lg' id='vb" + id + "'>" +
+                "<span class='glyphicon glyphicon-thumbs-up'></span>" +"<div class='numvotes'>" + business.numvotes + "</div>" +
+              "</button>" +
+            "</div>" +
+          "</div>" +
+        "</div>" +
+      "</div>"
+  ); 
+  
+  $("#bp" + id + " .businesscontents").html(generateInfoWindowHtml(business))
+  
+  $("#bp" + id).hover(
+    function(){
+      $("#bp" + id).css('background-color', 'rgb(236,236,236)');
+      infoLabels[id].open(map, markers[id]);
+    },
+    function(){
+      $("#bp" + id).css('background-color', 'white');
+      infoLabels[id].close(map, markers[id]);
+    }
+  );
+
+  $( '#vb' + id ).click(function(e) {
+      if (e.currentTarget.classList[e.currentTarget.classList.length - 1] == 'active') {
+        $(e.currentTarget).removeClass('active');
+        $('#' + e.currentTarget.id).html("<span class='glyphicon glyphicon-thumbs-up'></span> " +"<div class='numvotes'>"+ votes + "</div>" );
+      } else {
+        $(e.currentTarget).addClass('active');
+        $('#' + e.currentTarget.id).html("<span class='glyphicon glyphicon-thumbs-up'></span> " + "<div class='numvotes'>"+ (votes+1) + "</div>" );
+      }
+  }); 
+}
+
 
 window.onload = initialize;

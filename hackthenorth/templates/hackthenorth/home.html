@@ -23,12 +23,12 @@
         .marker .businessimage { float: left;}
         .marker .ratingsimage {vertical-align:middle; margin-top:0px;}
         .marker .businessinfo { margin-left: 110px;}
+        .marker .businessname { font-style: bold; font-size: 12px;}
     </style>
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
-    <script type="text/javascript" src="{% static 'js/sina-app.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/app.js' %}"></script>
 
     <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
@@ -55,8 +55,9 @@
   </head>
   <body>
     <div id="page">
-      <div id="map-canvas"></div>
       <div id="sidebar"></div>
+      <div id="map-canvas"></div>
+
     </div>
   </body>
 </html>
