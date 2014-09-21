@@ -7,7 +7,6 @@ var infoLabels = [];
 var fetchingBusinesses = false;
 var numFetched = 0;
 var businessLimit = 100;
-var userLocation = new google.maps.LatLng(0,0);
 var searchTerm = 'food';
 var sessionSlug = '';
 var redCircle = {
@@ -59,7 +58,6 @@ function initialize() {
   addSearchCat("hipster");
   addSearchCat("classy");
 
-
   sessionSlug = window.location.pathname.substring(1);
   if(sessionSlug[sessionSlug.length-1]=="/")
     sessionSlug=sessionSlug.substring(0,sessionSlug.length-1);
@@ -72,6 +70,12 @@ function initialize() {
   }
 
   $("#pagename").text("#"+sessionSlug);
+  $("#getmore").click(showMoreBusinesses);
+  $("#logo").click(function(){
+    $('#helpModal').modal('show');
+    $('#gsbutton').text("Okay!");
+  });
+
 
   startGetBusinesses(mapCenter); //use django-supplied location
 }
@@ -212,9 +216,6 @@ function addSearchCat(catName) {
     });
 }
 function startGetBusinesses(location){
-  $('#loading').show();
-
-  userLocation = location;
  // getBusinesses(location, 0, searchTerm);
   getVotedBusinesses(location);
 }
@@ -231,6 +232,7 @@ function getVotedBusinesses(location){
 }
 
 function getBusinesses(location, offset, term){
+  $('#loading').show();
   fetchingBusinesses = true;
 
   $.get('/get_info/', 
@@ -253,9 +255,10 @@ function getBusinesses(location, offset, term){
 }
 
 function showMoreBusinesses(){
-  if(!fetchingBusinesses && typeof userLocation != "undefined"){
+  debugger;
+  if(!fetchingBusinesses && typeof mapCenter != "undefined"){
     businessLimit += 100;
-    getBusinesses(userLocation, numFetched, 'food');
+    getBusinesses(mapCenter, numFetched, 'food');
   }
 }
 
