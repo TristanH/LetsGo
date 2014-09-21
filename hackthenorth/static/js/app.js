@@ -90,6 +90,7 @@ function initialize() {
   else{
     startGetBusinesses(new google.maps.LatLng(0,0));
   }
+  $('#getmore').click(showMoreBusinesses);
   addSearchCat("hipster");
   addSearchCat("bar");
   addSearchCat("booze");

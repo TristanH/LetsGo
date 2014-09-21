@@ -65,6 +65,19 @@ div#sidebar {
   border-top-left-radius: 0px;
   background: rgb(200, 200, 200);
 }
+#getmore {
+  float: right;
+  height: 30px;
+  padding: 0px;
+  margin-right: 1px;
+  padding-right: 4px;
+  padding-left: 4px;
+  border-bottom-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+  background: rgb(200, 200, 200);
+}
 div#loading {
   left: 0px;
   bottom: 0px;
