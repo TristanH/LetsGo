@@ -77,7 +77,7 @@ def search(term, ll, offset):
         'term': term,
         'll': ll,
         'sort': 0,
-        'offset': offset
+        'offset': offset,
         # 'limit': SEARCH_LIMIT
     }
 

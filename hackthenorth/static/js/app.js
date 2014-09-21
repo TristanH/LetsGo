@@ -27,7 +27,7 @@ function initialize() {
   ];
   map.setOptions({styles: noPoi});
 
-  if(true){
+  if(false){
     //check here for this sessions default location
     startGetBusinesses(new google.maps.LatLng(43.65, -79.4)); //use django-supplied location
   }
@@ -43,6 +43,7 @@ function initialize() {
                                               new google.maps.Point(11,11)),
           shadow: null,
       });
+    debugger;
 
       var locationInfo = new google.maps.InfoWindow({
           content: "Your Location"
@@ -214,7 +215,7 @@ function formatPhoneNumber(num) {
 }
 
 function addUI(business, id){
-
+  debugger;
   var votes = business.numvotes;
   var inserted = false;
   $("#sidebar .panel").each(function(){
