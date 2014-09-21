@@ -2,6 +2,7 @@ var map;
 var mapCenter = new google.maps.LatLng(43.4726492,-80.5401814);
 var userLocation = mapCenter;
 var markers = [];
+var searchCategories =[];
 var infoLabels = [];
 var fetchingBusinesses = false;
 var numFetched = 0;
@@ -52,6 +53,13 @@ function initialize() {
   ];
   map.setOptions({styles: noPoi});
 
+  addSearchCat("bar");
+  addSearchCat("booze");
+  addSearchCat("food");
+  addSearchCat("hipster");
+  addSearchCat("classy");
+
+
   sessionSlug = window.location.pathname.substring(1);
   if(sessionSlug[sessionSlug.length-1]=="/")
     sessionSlug=sessionSlug.substring(0,sessionSlug.length-1);
@@ -65,9 +73,7 @@ function initialize() {
 
   $("#pagename").text("#"+sessionSlug);
 
-  if(true){
-    startGetBusinesses(mapCenter); //use django-supplied location
-  }
+  startGetBusinesses(mapCenter); //use django-supplied location
 }
 
 function getUserLocation(){
@@ -100,7 +106,9 @@ function getUserLocation(){
 function startingSetup(){
   $("#sidebar").remove();
   $("#map-canvas").css('width', '100%');
+  $("#header").css('width', '100%');
   getBusinesses(mapCenter, 0, searchTerm);
+
   $('#gsbutton').click(function() {
     $('#helpModal').html(
       "<div class='modal-dialog modal-sm'>"+
@@ -182,7 +190,30 @@ function startingSetup(){
 
 }
 
+function addSearchCat(catName) {
+  searchCategories.push(catName);
+  $('#categoriesMenu').append("<li id='cat" + (searchCategories.length - 1) +"'><a href='#''>#" + catName + "</a></li>");
+  var index = searchCategories.length - 1;
+  $('#cat' + (searchCategories.length - 1)).click(function() {
+    debugger;
+    if ($('#cat' + index).hasClass('active')) {
+      $('#cat' + index).removeClass('active')
+    } else {
+      for (var l = searchCategories.length - 1; l >= 0; l--) {
+        if (index != l) {
+          $('#cat' + l).removeClass('active')
+        }else {
+          $('#cat' + l).addClass('active')
+          setTerm(searchCategories[index]);
+        }
+      };
+      
+      }
+    });
+}
 function startGetBusinesses(location){
+  $('#loading').show();
+
   userLocation = location;
  // getBusinesses(location, 0, searchTerm);
   getVotedBusinesses(location);
@@ -213,8 +244,10 @@ function getBusinesses(location, offset, term){
       numFetched += 20;
       if(offset < businessLimit && offset < data.total)
         getBusinesses(location, offset + 20, 'food');
-      else
+      else {
         fetchingBusinesses = false;
+        $('#loading').hide();
+      }
   });
 
 }
