@@ -1,4 +1,6 @@
 var map;
+var mapCenter = new google.maps.LatLng(43.4726492,-80.5401814);
+var userLocation = mapCenter;
 var markers = [];
 var infoLabels = [];
 var fetchingBusinesses = false;
@@ -27,9 +29,15 @@ var greenCircle = {
 
 function initialize() {
 
+  var locString = $("#sessionLoc").text();
+  if(locString){
+    var bits = locString.split(/,\s*/);
+    mapCenter = new google.maps.LatLng(parseFloat(bits[0]),parseFloat(bits[1]));
+  }
+
   var mapOptions = {
-    center: new google.maps.LatLng(37.900000,-122.500000),
-    zoom: 14
+    center: mapCenter,
+    zoom: 15
   };
   map = new google.maps.Map(document.getElementById("map-canvas"),
       mapOptions);
@@ -48,21 +56,24 @@ function initialize() {
   if(sessionSlug[sessionSlug.length-1]=="/")
     sessionSlug=sessionSlug.substring(0,sessionSlug.length-1);
 
+  getUserLocation();
   //popup homepage modal here
-  if(sessionSlug=="/" || sessionSlug=="")
+  if(sessionSlug=="/" || sessionSlug==""){
+    startingSetup();
     return;
+  }
 
   $("#pagename").text("#"+sessionSlug);
 
-
-
   if(true){
-    //check here for this sessions default location
-    startGetBusinesses(new google.maps.LatLng(43.65, -79.4)); //use django-supplied location
+    startGetBusinesses(mapCenter); //use django-supplied location
   }
-  else if(!!navigator.geolocation) {
+}
+
+function getUserLocation(){
+  if(!!navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
-      var userLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      userLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
       var userMarker = new google.maps.Marker({
           map: map,
           position: userLocation,
@@ -82,13 +93,14 @@ function initialize() {
       google.maps.event.addListener(userMarker, 'mouseout', function() {
         locationInfo.close(map,userMarker);
       });
-
-      startGetBusinesses(userLocation);
     });
   }
-  else{
-    startGetBusinesses(new google.maps.LatLng(0,0));
-  }
+}
+
+function startingSetup(){
+  $("#sidebar").remove();
+  $("#map-canvas").css('width', '100%');
+  getBusinesses(mapCenter, 0, searchTerm);
   $('#gsbutton').click(function() {
     $('#helpModal').html(
       "<div class='modal-dialog modal-sm'>"+
@@ -98,23 +110,23 @@ function initialize() {
             "</div>"+
             "<div class='modal-body' id='helpModal-body'>"+
               "<div class='input-group'>" + 
-                "<input type='text' class='form-control' placeholder='List Name' required>" +
+                "<input id='sluginput' type='text' class='form-control' placeholder='Code Name (e.g dinnertime)' required>" +
                 "<span class='input-group-addon'>" +
                   "<span class='glyphicon glyphicon-tag'></span>" +
                 "</span>" +
               "</div>" +
               "<br>" + 
               "<div class='input-group'>" + 
-                "<input type='text' class='form-control' placeholder='Location' required>" +
+                "<input id='searchlocation' type='text' class='form-control' placeholder='Location (e.g University of Waterloo)' required>" +
                 "<span class='input-group-btn'>" + 
-                  "<button class='btn btn-default' type='button'>" +
+                  "<button id='getCurrentLocation' class='btn btn-default' type='button'>" +
                     "<span class='glyphicon glyphicon-map-marker'></span>" +
                   "</button>" +
                 "</span>" +
               "</div>" +
               "<br>" + 
               "<div class='input-group'>" + 
-                "<textarea rows='3' maxlength='100' class='form-control' placeholder='Description' required></textarea>" +
+                "<textarea id='sessiondescription' rows='3' maxlength='100' class='form-control' placeholder='Description (e.g Let&#39;s grab dinner after the hackathon at 4)' required></textarea>" +
                 "<span class='input-group-addon'>" +
                   "<span class='glyphicon glyphicon-tag'></span>" +
                 "</span>" +
@@ -122,17 +134,55 @@ function initialize() {
             "</div>"+
             "<div class='modal-footer'>"+
               "<div class='form-group'>" +
-                "<button type='submit' id='donebutton' class='btn btn-default btn-primary' data-dismiss='modal'>Done</button>"+
+                "<button type='submit' id='donebutton' class='btn btn-default btn-primary'>Let's Go</button>"+
               "</div>" +
             "</div>"+
         "</div>"+
-      "</div>")
+      "</div>");
+    
+    $("#getCurrentLocation").click(function(){
+      debugger;
+      $('#searchlocation').val(userLocation.toUrlValue(7));
+    });
+    $("#donebutton").click(function(){
+      var addressField = document.getElementById('searchlocation');
+      var geocoder = new google.maps.Geocoder();
+      geocoder.geocode(
+        {'address': addressField.value}, 
+        function(results, status) { 
+            if (status == google.maps.GeocoderStatus.OK) { 
+                var loc = results[0].geometry.location;
+                var locString = loc.toUrlValue(15);
+                var slug = $("#sluginput").val();
+                var description = $("#sessiondescription").val();
+                $.get('/gen_session/',
+                  {
+                    'slug': slug,
+                    'location': locString,
+                    'description': description
+                  },
+                  function(data, status){
+                    if(status=="success"){
+                      debugger;
+                      window.location.href = "/" + data;
+                    }
+                    else
+                      alert("Invalid input: " + data);
+                  }
+                );
+            } 
+            else {
+                alert("Address not found: " + status); 
+            } 
+        }
+      );
+    });
   });
-  $('#helpModal').modal('show')
+  $('#helpModal').modal('show');
+
 }
 
 function startGetBusinesses(location){
-  map.setCenter(location);
   userLocation = location;
  // getBusinesses(location, 0, searchTerm);
   getVotedBusinesses(location);
@@ -142,6 +192,8 @@ function getVotedBusinesses(location){
   $.get('/'+sessionSlug+'/get_voted/',
     function(data, status){
       addBusinessMarkers(data);
+      if($("#sidebar .panel").length==0)
+        $("#sidebar").append("<h2>Click a map icon to add it to your list!</h2>");
       getBusinesses(location, 0, searchTerm);
       //call the standard business search once the important ones are found
     });
@@ -302,6 +354,10 @@ function formatPhoneNumber(num) {
 }
 
 function addUI(business, id){
+  //remove prompt for no voted markers
+  if($("#sidebar .panel").length==0)
+    $("#sidebar").html('');
+
   var votes = business.numvotes;
   var inserted = false;
   var newPanel = 
@@ -331,10 +387,13 @@ function addUI(business, id){
   if(!inserted)
     $("#sidebar").append(newPanel);
   
-  $("#bp" + id + " .businesscontents").html(generateInfoWindowHtml(business))
+  $("#bp" + id + " .businesscontents").html(generateInfoWindowHtml(business)) 
 
   newPanel.slideDown('slow');
-  
+
+  var paneHeight = $("#bp"+id + " .panel-body").height();
+  $("#bp" + id + " .vote-div").css('margin-top', (paneHeight - 55)/2 + 'px');
+
   $("#bp" + id).hover(
     function(){
       $("#bp" + id).css('background-color', 'rgb(236,236,236)');
@@ -379,6 +438,5 @@ function voteEvent(id){
     $('#vb' + id ).html("<span class='glyphicon glyphicon-thumbs-up'></span> " + "<div class='numvotes'>"+ (this.numvotes+1) + "</div>" );
   }
 }
-
 
 window.onload = initialize;

@@ -18,13 +18,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <style type="text/css">
-        .marker {font-size: 11px;}
-        .marker .businessimage { float: left;}
-        .marker .ratingsimage {vertical-align:middle; margin-top:0px;}
-        .marker .businessinfo { margin-left: 110px;}
-        .marker .businessname { font-style: bold; font-size: 12px;}
-    </style>
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
@@ -38,15 +31,16 @@
               <h2 class="modal-title" id="myModalLabel">LetsGo!</h2>
             </div>
             <div class="modal-body" id="helpModal-body">
-                <p>LetsGo! is a tool to help you and your friends discover businesses that you'd like to go to!</p>
-                <p>LetsGo! is an interactive map that can help you and your group decide on a place to go.
+                <p>LetsGo! is a tool to help you and your friends discover businesses that you'd like to go to together.</p>
+                <p>We provide an interactive map that can help you and your group decide on a place to go.
                 Whether it be for groceries, coffee, food, or booze, LetsGo! allows you to find new businesses to enjoy!</p>
                 <h4>How To:</h4>
                 <ol>
                   <li>Send the URL to your friends so that they can access your LetsGo! List.</li>
-                   <li>More usage instructions!</li>
-                   <li>You or your friends can add businesses to the list by voting on them.</li>
-                  <li>The list will be ordered based on the number of votes that it receives.</li>
+                  <li>Browse through the businesses near you on the map</li>
+                  <li>You or your friends can add businesses to the list by clicking on them.</li>
+                  <li>Your list will be on the right, ordered by the votes each business receives.</li>
+                  <li>After everyone has voted, you'll have a fair and exciting destination to go to without feeeling guilty.</li>
                 </ol>
             </div>
             <div class="modal-footer">
@@ -61,8 +55,9 @@
       <div id="header">
         <img id="logo" src="{% static 'img/LetsGo-white.png' %}">
         <div id="pagename">#NameOfYourThing</div>
-        <div id="pagedesc"><p>THIS IS MY PAGE!</p></div>
+        <div id="pagedesc"><p>{{description}}</p></div>
       </div>
+      <div id="sessionloc">{{location}}</div>
       <div id="sidebar"></div>
       <div id="map-canvas"></div>
 

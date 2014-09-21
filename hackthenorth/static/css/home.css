@@ -55,8 +55,9 @@ div#map-canvas {
 div.vote-div {
   float: right;
   width: 22%;
-  min-height: 100%;
+  height: 100%;
   position:relative;
+  padding-right: 3px;
 }
 div.businesscontents {
   float: left;
@@ -96,3 +97,25 @@ html, body{
   padding-bottom: 3px;
 }
 
+.marker {font-size: 11px;}
+.marker .businessimage { float: left;}
+.marker .ratingsimage {vertical-align:middle; margin-top:0px;}
+.marker .businessinfo { margin-left: 110px;}
+.marker .businessname { font-style: bold; font-size: 12px;}
+
+#sessionloc{
+  display: none;
+}
+
+#sidebar h2{
+  text-align: center;
+  font-style: italic;
+}
+
+#sessiondescription{
+  resize: none;
+}
+
+#helpModal .modal-dialog.modal-sm{
+  width: 350px;
+}
