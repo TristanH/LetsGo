@@ -39,10 +39,13 @@
             </div>
             <div class="modal-body" id="helpModal-body">
                 <p>LetsGo! is a tool to help you and your friends discover businesses that you'd like to go to!</p>
+                <p>LetsGo! is an interactive map that can help you and your group decide on a place to go.
+                Whether it be for groceries, coffee, food, or booze, LetsGo! allows you to find new businesses to enjoy!</p>
                 <h4>How To:</h4>
                 <ol>
                   <li>Send the URL to your friends so that they can access your LetsGo! List.</li>
-                  <li>More usage instructions!</li>
+                   <li>More usage instructions!</li>
+                   <li>You or your friends can add businesses to the list by voting on them.</li>
                   <li>The list will be ordered based on the number of votes that it receives.</li>
                 </ol>
             </div>
@@ -55,6 +58,11 @@
   </head>
   <body>
     <div id="page">
+      <div id="header">
+        <img id="logo" src="{% static 'img/LetsGo-white.png' %}">
+        <div id="pagename"><p>#NameOfYourThing</p></div>
+        <div id="pagedesc"><p>THIS IS MY PAGE! FUCK YOU!</p></div>
+      </div>
       <div id="sidebar"></div>
       <div id="map-canvas"></div>
 
