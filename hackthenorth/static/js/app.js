@@ -74,8 +74,17 @@ function initialize() {
   $("#pagename").text("#"+sessionSlug);
   $("#getmore").click(showMoreBusinesses);
   $("#logo").click(function(){
+    modalSetup();
+    $('#helpModal').modal({
+      backdrop: true,
+      keyboard: true
+    });
+    $("#gsbutton").removeClass("btn-default").addClass("btn-info");
+    $("#gsbutton").text("Make your own LetsGo session");
+    if($("#exitModal").length === 0)
+      $('#helpModal .modal-footer').append(' <button type="button" id="exitModal" class="btn btn-default" data-dismiss="modal">Back to #'+sessionSlug+'</button></a> ');
+
     $('#helpModal').modal('show');
-    $('#gsbutton').text("Okay!");
   });
 
 
@@ -109,13 +118,8 @@ function getUserLocation(){
   }
 }
 
-function startingSetup(){
-  $("#sidebar").remove();
-  $("#map-canvas").css('width', '100%');
-  $("#header").css('width', '100%');
-  getBusinesses(mapCenter, 0, searchTerm);
-
-  $('#gsbutton').click(function() {
+function modalSetup(){
+    $('#gsbutton').click(function() {
     $('#helpModal').html(
       "<div class='modal-dialog modal-sm'>"+
           "<div class='modal-content'>"+
@@ -195,8 +199,15 @@ function startingSetup(){
       );
     });
   });
-  $('#helpModal').modal('show');
+}
 
+function startingSetup(){
+  $("#sidebar").remove();
+  $("#map-canvas").css('width', '100%');
+  $("#header").css('width', '100%');
+  modalSetup();
+  $('#helpModal').modal('show');
+  getBusinesses(mapCenter, 0, searchTerm);
 }
 
 function addSearchCat(catName) {
