@@ -37,7 +37,7 @@ function initialize() {
 
   var mapOptions = {
     center: mapCenter,
-    zoom: 15
+    zoom: 14
   };
   map = new google.maps.Map(document.getElementById("map-canvas"),
       mapOptions);
@@ -57,6 +57,8 @@ function initialize() {
   addSearchCat("food");
   addSearchCat("hipster");
   addSearchCat("classy");
+  addSearchCat("bacon");
+
 
   sessionSlug = window.location.pathname.substring(1);
   if(sessionSlug[sessionSlug.length-1]=="/")
@@ -245,9 +247,11 @@ function getBusinesses(location, offset, term){
       'offset': offset
     },
     function(data, status){
-      addBusinessMarkers(data.businesses);
+      if(data!==null)
+        addBusinessMarkers(data.businesses);
+
       numFetched += 20;
-      if(offset < businessLimit && offset < data.total)
+      if(data!==null && offset < businessLimit && offset < data.total)
         getBusinesses(location, offset + 20, 'food');
       else {
         fetchingBusinesses = false;
@@ -284,6 +288,7 @@ function clearMarkers(){
 }
 
 function addBusinessMarkers(businesses){
+
   var clicked = [];
 
   for(var i=0; i<businesses.length; i++){
